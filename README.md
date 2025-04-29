@@ -1,7 +1,13 @@
-# Tmux Suspend
+# Tmux Toggle Nest
 
 Plugin that lets you suspend **local tmux session**, so that you can work with
 **nested remote tmux session** painlessly.
+
+## Changes made in this fork:
+
+- Add better parsing of `@suspend_key` for global keybindings with `-n`, modifiers (`-C` or `-M`) and prefix binds `Prefix + KEY`.
+- Add ability to use custom keybindings instead of just a single key.
+- Change default keybinding for toggling to `Prefix + x`
 
 **Demo**:
 
@@ -11,12 +17,12 @@ Plugin that lets you suspend **local tmux session**, so that you can work with
 
 With the default keybinding,
 
-Press `F12` to suspend your local tmux session. In suspeded state, you can only
+Press `Prefix + x` to suspend your local tmux session. In suspeded state, you can only
 interact with the currently active pane (which will be running the remote tmux session).
 
-Press `F12` again in suspended state to resume local tmux session.
+Press `Prefix + x` again in suspended state to resume local tmux session.
 
-_**Note**_: If you have [**tmux-mode-indicator**](https://github.com/MunifTanjim/tmux-mode-indicator)
+_**Note**_: If you have [**tmux-mode-indicator**](https://github.com/dpi0/tmux-mode-indicator)
 plugin installed, it'll automatically show indicator for the suspended state.
 
 ## Installation
@@ -26,7 +32,7 @@ plugin installed, it'll automatically show indicator for the suspended state.
 Add this repository as a TPM plugin in your `.tmux.conf` file:
 
 ```conf
-set -g @plugin 'MunifTanjim/tmux-suspend'
+set -g @plugin 'dpi0/tmux-toggle-nest'
 ```
 
 Press `prefix + I` in Tmux environment to install it.
@@ -36,13 +42,13 @@ Press `prefix + I` in Tmux environment to install it.
 Clone this repository:
 
 ```bash
-git clone https://github.com/MunifTanjim/tmux-suspend.git ~/.tmux/plugins/tmux-suspend
+git clone https://github.com/dpi0/tmux-toggle-nest.git ~/.tmux/plugins/tmux-toggle-nest
 ```
 
 Add this line in your `.tmux.conf` file:
 
 ```conf
-run-shell ~/.tmux/plugins/tmux-suspend/suspend.tmux
+run-shell ~/.tmux/plugins/tmux-toggle-nest/suspend.tmux
 ```
 
 Reload Tmux configuration file with:
@@ -57,11 +63,20 @@ The following configuration options are available:
 
 ### `@suspend_key`
 
-Key used to suspend/resume local tmux session. This is not binded to any Prefix.
+Key used to suspend/resume local tmux session. Default `Prefix + x`
 
 ```conf
-set -g @suspend_key 'F12'
+set -g @suspend_key 'x'
 ```
+
+To set custom keybindings:
+
+| Goal                          | Example .tmux.conf line        | Behavior                         |
+| :---------------------------- | :----------------------------- | :------------------------------- |
+| Use `Prefix + x` (Default)    | `set -g @suspend_key 'x'`      | Press Prefix + x to suspend      |
+| Use `Alt+x` (without Prefix)  | `set -g @suspend_key '-n M-x'` | Press Alt+x directly to suspend  |
+| Use `Ctrl+s` (without Prefix) | `set -g @suspend_key '-n C-s'` | Press Ctrl+s directly to suspend |
+| Use `Prefix + Ctrl+a`         | `set -g @suspend_key 'C-a'`    | Press Prefix + Ctrl+a to suspend |
 
 ### `@suspend_suspended_options`
 
@@ -124,7 +139,3 @@ set -g @suspend_on_suspend_command "tmux \
 
 As you can see, it's more convenient to use `@suspend_suspended_options` for setting
 and reverting options.
-
-## License
-
-Licensed under the MIT License. Check the [LICENSE](./LICENSE) file for details.
